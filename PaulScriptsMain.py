@@ -91,6 +91,8 @@ def chose_matrix():
             basematrix.run()
         if choice == "3":
             return
+			
+			
 def chose_bins():
         print("\n")
         print("1. Get items without bins")
@@ -114,6 +116,49 @@ def chose_bins():
             return
 			
 def update_scripts():
+	
+	r=requests.get("https://api.github.com/repos/paulizleet/CEDNet-Python-Suite/git/refs/heads/master")
+	
+	print(r.text)
+	newreq = None
+	sp = r.text.split(",")
+	
+	txt=""
+	
+	try:
+		f = open("C:\\PaulScripts\\sys\\configs\\last_update.txt", 'r')
+		txt=f.read()
+	except:
+		f = open("C:\\PaulScripts\\sys\\configs\\last_update.txt", 'w')
+	
+	
+	counter=0
+	for each in sp:
+		
+		if each[:5].strip() == "\"url\"":
+			if counter == 0:
+				counter+=1
+				continue
+			input(each[6:].replace("\"", ""))
+			newreq=requests.get(each[6:].replace("\"", "").replace("}", ""))
+	
+	print(newreq.text)
+
+	sp=newreq.text.split(",")
+	
+	for each in sp:
+		
+		if each[:6].strip() == "\"date\"":
+			if each.strip() == txt.strip():
+				print("No update required")
+				return
+			else:
+				f.write(each)
+				f.close()
+			break
+			
+		
+
 	r = requests.get("https://github.com/paulizleet/CEDNet-Python-Suite/archive/master.zip")
 	f=open(os.getcwd()+"\\update.zip", "wb")
 	f.write(r.content)
@@ -129,7 +174,12 @@ def update_scripts():
 			shutil.copy(roots+"\\"+each, os.getcwd()+"\\Pythons\\Definitely Useful\\")
 		break
 		
-		
+	shutil.rmtree(os.getcwd()+"\\update")
+	os.remove(os.getcwd()+"\\update.zip")
+	
+	print("Update completed.  This script will now quit.")
+	quit()
+	
 	
 
 if __name__ == "__main__":
