@@ -15,11 +15,17 @@ import solar
 import ShelfAddresses
 import cycle
 import nobins
+import shutil
+import os
+import requests
+from zipfile import ZipFile
 
-import gitpython
+
 
 def PaulScriptsMenu():
-	update_from_git()
+
+
+	update_scripts()
 
 	try:
 		
@@ -107,8 +113,24 @@ def chose_bins():
         if choice == "3":
             return
 			
-def update_from_git():
-	pass
+def update_scripts():
+	r = requests.get("https://github.com/paulizleet/CEDNet-Python-Suite/archive/master.zip")
+	f=open(os.getcwd()+"\\update.zip", "wb")
+	f.write(r.content)
+	f.close()
+	
+	z=ZipFile(os.getcwd()+"\\update.zip", "r")
+	z.extractall(".\\update")
+	
+	for roots, dirs, files in os.walk(os.getcwd()+"\\update\\CEDNet-Python-Suite-master"):
+		print(roots)
+		print(dirs)
+		for each in files:
+			shutil.copy(roots+"\\"+each, os.getcwd()+"\\Pythons\\Definitely Useful\\")
+		break
+		
+		
+	
 
 if __name__ == "__main__":
     PaulScriptsMenu()
