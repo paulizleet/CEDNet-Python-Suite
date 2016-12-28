@@ -87,7 +87,7 @@ def do_matrix(vendor):
 				f = open(path + matrix_in, 'r')
 				break
 			except FileNotFoundError:
-				print("Please export the matrix you would like to update to C:\\PaulScripts\\Wire Matrix\\{m}".format(m=matrix_in)
+				print("Please export the matrix you would like to update to C:\\PaulScripts\\Wire Matrix\\{m}".format(m=matrix_in))
 				ch=input("Or type q to quit.")
 				if ch.lower() == "q":
 					return -1
@@ -379,11 +379,11 @@ def run():
 		return
 		
 	while True:
-		choice = input("Would you like to do pipe as well?")
+		choice = input("Would you like to do pipe as well? y/n")
 		if choice.lower() == "y":
 			a=do_matrix(PIPE_VENDOR)
-				if a == -1:
-					return
+			if a == -1:
+				return
 			break
 		elif choice.lower() == 'n':
 			break

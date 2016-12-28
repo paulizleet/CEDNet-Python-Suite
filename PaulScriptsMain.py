@@ -25,57 +25,56 @@ from zipfile import ZipFile
 def PaulScriptsMenu():
 
 
-	update_scripts()
+    update_scripts()
 
-	try:
-		
-		print("Welcome to Paul's CEDNet Utility Scripts main menu")
+    try:
+        
+        print("Welcome to Paul's CEDNet Utility Scripts main menu")
 
-		while True:
-			print("\n")
-			print("1. Inventory Level Checking")
-			print("2. Solar Reporting")
-			print("3. Matrix operations")
-			print("4. Bin Locations")
-			print("5. Quit")
-			choice = ""
+        while True:
+            print("\n")
+            print("1. Inventory Level Checking")
+            print("2. Solar Reporting")
+            print("3. Matrix operations")
+            print("4. Bin Locations")
+            print("5. Quit")
+            choice = ""
 
-			while True:
-				choice = input("Please make a selection.")
-				if choice in ["1", "2", "3", "4", "5"]:
-					break
-				else:
-					print("Invalid choice")
+            while True:
+                choice = input("Please make a selection.")
+                if choice in ["1", "2", "3", "4", "5"]:
+                    break
+                else:
+                    print("Invalid choice")
 
-			if choice == "1":
-				print("Running today's inventory level checking script.")
-				cycle.run()
+            if choice == "1":
+                print("Running today's inventory level checking script.")
+                cycle.run()
 
-			if choice == "2":
-				print("Solar Reporting")
-				solar.run()
+            if choice == "2":
+                print("Solar Reporting")
+                solar.run()
 
-			if choice == "3":
-				print("Matrix Operations")
-				chose_matrix()
+            if choice == "3":
+                print("Matrix Operations")
+                chose_matrix()
 
-			if choice == "4":
-				print("Bin Locations")
-				chose_bins()
-				
-			if choice == "5":
-				return
-				
-	except:
-		print("A problem has occurred that I haven't seen before.\n  I've left a log of the error in C:\\PaulScripts\\sys\\logs")
-		print("Just kidding i haven't gotten to this part yet")
+            if choice == "4":
+                print("Bin Locations")
+                chose_bins()
+                
+            if choice == "5":
+                return
+                
+    except:
+        print("A problem has occurred that I haven't seen before.\n  I've left a log of the error in C:\\PaulScripts\\sys\\logs")
+        print("Just kidding i haven't gotten to this part yet")
 
 def chose_matrix():
         print("\n")
         print("1. Wire/Pipe Matrix")
         print("2. Base Matrix")
         print("3. Go Back")
-        
         while True:
             choice = input("Please make a selection.")
             if choice in ["1", "2", '3']:
@@ -91,8 +90,8 @@ def chose_matrix():
             basematrix.run()
         if choice == "3":
             return
-			
-			
+            
+            
 def chose_bins():
         print("\n")
         print("1. Get items without bins")
@@ -114,85 +113,85 @@ def chose_bins():
             ShelfAddresses.run()
         if choice == "3":
             return
-			
+            
 def update_scripts():
-	
-	
-	try:
-		#Check if there was an update.  
-		r=requests.get("https://api.github.com/repos/paulizleet/CEDNet-Python-Suite/git/refs/heads/master")
-		if r.status_code != requests.codes.ok:
-			print("Error fetching the update.  Are you online?  Skipping update this time.")
-			return
+    
+    
+    try:
+        #Check if there was an update.  
+        r=requests.get("https://api.github.com/repos/paulizleet/CEDNet-Python-Suite/git/refs/heads/master")
+        if r.status_code != requests.codes.ok:
+            print("Error fetching the update.  Are you online?  Skipping update this time.")
+            return
 
-	
-	
-		print(r.text)
-		newreq = None
-		sp = r.text.split(",")
-		
-		txt=""
-		f=None
-		try:
-			f = open("C:\\PaulScripts\\sys\\configs\\last_update.txt", 'r')
-			txt=f.read()
-		except:
-			f = open("C:\\PaulScripts\\sys\\configs\\last_update.txt", 'w')
-		
-		
-		counter=0
-		for each in sp:
-			
-			if each[:5].strip() == "\"url\"":
-				if counter == 0:
-					counter+=1
-					continue
-				input(each[6:].replace("\"", ""))
-				newreq=requests.get(each[6:].replace("\"", "").replace("}", ""))
-		
-		print(newreq.text)
+    
+    
+        print(r.text)
+        newreq = None
+        sp = r.text.split(",")
+        
+        txt=""
+        f=None
+        try:
+            f = open("C:\\PaulScripts\\sys\\configs\\last_update.txt", 'r')
+            txt=f.read()
+        except:
+            f = open("C:\\PaulScripts\\sys\\configs\\last_update.txt", 'w')
+        
+        
+        counter=0
+        for each in sp:
+            
+            if each[:5].strip() == "\"url\"":
+                if counter == 0:
+                    counter+=1
+                    continue
+                input(each[6:].replace("\"", ""))
+                newreq=requests.get(each[6:].replace("\"", "").replace("}", ""))
+        
+        print(newreq.text)
 
-		sp=newreq.text.split(",")
-		
-		for each in sp:
-			
-			if each[:6].strip() == "\"date\"":
-				if each.strip() == txt.strip():
-					print("No update required")
-					return
-				else:
-					f.write(each)
-					f.close()
-				break
-	except:
-		print("Error fetching the update.  Are you online?  Skipping update this time.")
-		return
-	
-		
-	#There was a mismatch between the latest commit and the current code.
-	#Download the latest code and update.
-	r = requests.get("https://github.com/paulizleet/CEDNet-Python-Suite/archive/master.zip")
-	f=open(os.getcwd()+"\\update.zip", "wb")
-	f.write(r.content)
-	f.close()
-	
-	z=ZipFile(os.getcwd()+"\\update.zip", "r")
-	z.extractall(".\\update")
-	
-	for roots, dirs, files in os.walk(os.getcwd()+"\\update\\CEDNet-Python-Suite-master"):
-		print(roots)
-		print(dirs)
-		for each in files:
-			shutil.copy(roots+"\\"+each, os.getcwd()+"\\Pythons\\Definitely Useful\\")
-		break
-		
-	shutil.rmtree(os.getcwd()+"\\update")
-	os.remove(os.getcwd()+"\\update.zip")
-	
-	print("Update completed.  This script will now quit.")
-	quit()
-	
-	
+        sp=newreq.text.split(",")
+        
+        for each in sp:
+            
+            if each[:6].strip() == "\"date\"":
+                if each.strip() == txt.strip():
+                    print("No update required")
+                    return
+                else:
+                    f.write(each)
+                    f.close()
+                break
+    except:
+        print("Error fetching the update.  Are you online?  Skipping update this time.")
+        return
+    
+        
+    #There was a mismatch between the latest commit and the current code.
+    #Download the latest code and update.
+    r = requests.get("https://github.com/paulizleet/CEDNet-Python-Suite/archive/master.zip")
+    f=open(os.getcwd()+"\\update.zip", "wb")
+    f.write(r.content)
+    f.close()
+    
+    z=ZipFile(os.getcwd()+"\\update.zip", "r")
+    z.extractall(".\\update")
+    
+    for roots, dirs, files in os.walk(os.getcwd()+"\\update\\CEDNet-Python-Suite-master"):
+        print(roots)
+        print(dirs)
+        for each in files:
+            shutil.copy(roots+"\\"+each, os.getcwd()+"\\Pythons\\Definitely Useful\\")
+        break
+        
+    shutil.rmtree(os.getcwd()+"\\update")
+    os.remove(os.getcwd()+"\\update.zip")
+    
+    print("Update completed.  This script will now quit.")
+    quit()
+    
+    
 
 if __name__ == "__main__":
     PaulScriptsMenu()
