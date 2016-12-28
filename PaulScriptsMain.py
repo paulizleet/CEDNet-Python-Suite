@@ -128,7 +128,7 @@ def update_scripts():
 		print("Got OK request")
 
 
-		print(r.text)
+
 		newreq = None
 		sp = r.text.split(",")
 		
@@ -153,7 +153,7 @@ def update_scripts():
 				newreq=requests.get(each[6:].replace("\"", "").replace("}", ""))
 		
 		print("got second request")
-		print(newreq.text)
+
 
 		sp=newreq.text.split(",")
 		
