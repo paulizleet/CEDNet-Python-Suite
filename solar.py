@@ -360,8 +360,8 @@ def do_lg(customers):
 
 
 		#print(ws.row(mr+i))
-	ws.cell(row=mr + pos.__len__() + extraspaces, column = 2).value = "Total:"
-	ws.cell(row=mr + pos.__len__() + extraspaces, column = 3).value = totalqty
+	ws.cell(row=mr + len(pos) + extraspaces, column = 2).value = "Total:"
+	ws.cell(row=mr + len(pos) + extraspaces, column = 3).value = totalqty
 
 
 	lgwb.save(path + "Solar Reporting\Monthly\LG\LG {i}.xlsx".format(i=strftime("%B %Y")))
@@ -420,7 +420,7 @@ def run_speaks(customers, fp, mfr, prod):
 
 	for each in asdf:
 
-		if each.__len__() <= 3:
+		if len(each)<= 3:
 			continue
 		if each[2].strip() not in prod:
 			#print("woo")
@@ -444,7 +444,7 @@ def ced_stock(fp, mfr, prod):
 		#print(line)
 	#	input("...")
 		ddd = []
-		if line[:mfr.__len__()] == mfr:
+		if line[:len(mfr)] == mfr:
 			sp = line.split(" ")
 
 			sp2 = sp
@@ -456,22 +456,6 @@ def ced_stock(fp, mfr, prod):
 
 				sp.append(each.replace("\xad", "-"))
 
-
-
-
-		#	print(sp)
-			'''if sp.__len__() == 1:
-				nextline = f.readline()
-				if nextline in prod:
-					ddd.append(nextline)
-					ddd.append(f.readline())
-					ddd.append(f.readline())
-
-
-					if ddd[2].isnumeric() == False:
-						ddd[2] = 0
-					final.append(ddd)
-					continue'''
 
 			if sp[1] in prod:
 				ddd.append(sp[1])
