@@ -119,58 +119,59 @@ def update_scripts():
 	
 
 	#Check if there was an update.  
-	r=requests.get("https://api.github.com/repos/paulizleet/CEDNet-Python-Suite/git/refs/heads/master")
-	if r.status_code != requests.codes.ok:
-		print("Error fetching the update.  Are you online?  Skipping update this time.")
-		return
-	
-	print("Got OK request")
-
-
-	print(r.text)
-	newreq = None
-	sp = r.text.split(",")
-	
-
-	try:
-		f = open("C:\\PaulScripts\\configs\\last_update.txt", 'r')
-		txt=f.read()
-		f.close()
-	except:
-		pass
-	f = open("C:\\PaulScripts\\configs\\last_update.txt", 'w')
-	
-	
-	counter=0
-	for each in sp:
+	try: 
+		r=requests.get("https://api.github.com/repos/paulizleet/CEDNet-Python-Suite/git/refs/heads/master")
+		if r.status_code != requests.codes.ok:
+			print("Error fetching the update.  Are you online?  Skipping update this time.")
+			return
 		
-		if each[:5].strip() == "\"url\"":
-			if counter == 0:
-				counter+=1
-				continue
-			input(each[6:].replace("\"", ""))
-			newreq=requests.get(each[6:].replace("\"", "").replace("}", ""))
-	
-	print("got second request")
-	print(newreq.text)
+		print("Got OK request")
 
-	sp=newreq.text.split(",")
-	
-	for each in sp:
+
+		print(r.text)
+		newreq = None
+		sp = r.text.split(",")
 		
-		if each[:6].strip() == "\"date\"":
-			if each.strip() == txt.strip():
-				print("No update required")
-				return
-			else:
-				f.write(each)
-				f.close()
-			break
-#    except:
-#        print("Error fetching the update.  Are you online?  Skipping update this time.")
-#        return
-	
+
+		try:
+			f = open("C:\\PaulScripts\\configs\\last_update.txt", 'r')
+			txt=f.read()
+			f.close()
+		except:
+			pass
+		f = open("C:\\PaulScripts\\configs\\last_update.txt", 'w')
 		
+		
+		counter=0
+		for each in sp:
+			
+			if each[:5].strip() == "\"url\"":
+				if counter == 0:
+					counter+=1
+					continue
+				#input(each[6:].replace("\"", ""))
+				newreq=requests.get(each[6:].replace("\"", "").replace("}", ""))
+		
+		print("got second request")
+		print(newreq.text)
+
+		sp=newreq.text.split(",")
+		
+		for each in sp:
+			
+			if each[:6].strip() == "\"date\"":
+				if each.strip() == txt.strip():
+					print("No update required")
+					return
+				else:
+					f.write(each)
+					f.close()
+				break
+    except:
+        print("Error fetching the update.  Are you online?  Skipping update this time.")
+        return
+	
+	
 	#There was a mismatch between the latest commit and the current code.
 	#Download the latest code and update.
 	r = requests.get("https://github.com/paulizleet/CEDNet-Python-Suite/archive/master.zip")
@@ -180,7 +181,7 @@ def update_scripts():
 	
 	z=ZipFile(os.getcwd()+"\\update.zip", "r")
 	z.extractall(".\\update")
-	quit()
+
 	for roots, dirs, files in os.walk(os.getcwd()+"\\update\\CEDNet-Python-Suite-master"):
 		print(roots)
 		print(dirs)
