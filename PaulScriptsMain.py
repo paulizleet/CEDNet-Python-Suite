@@ -166,10 +166,10 @@ def update_scripts():
 				else:
 					f.write(each)
 					f.close()
-				break
-    except:
-        print("Error fetching the update.  Are you online?  Skipping update this time.")
-        return
+					break
+	except:
+		print("Error fetching the update.  Are you online?  Skipping update this time.")
+		return
 	
 	
 	#There was a mismatch between the latest commit and the current code.
