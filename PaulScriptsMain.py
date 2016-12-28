@@ -118,48 +118,55 @@ def chose_bins():
 def update_scripts():
 	
 	
-	
-	#Check if there was an update.  
-	r=requests.get("https://api.github.com/repos/paulizleet/CEDNet-Python-Suite/git/refs/heads/master")
-	
-	print(r.text)
-	newreq = None
-	sp = r.text.split(",")
-	
-	txt=""
-	f=None
 	try:
-		f = open("C:\\PaulScripts\\sys\\configs\\last_update.txt", 'r')
-		txt=f.read()
-	except:
-		f = open("C:\\PaulScripts\\sys\\configs\\last_update.txt", 'w')
-	
-	
-	counter=0
-	for each in sp:
-		
-		if each[:5].strip() == "\"url\"":
-			if counter == 0:
-				counter+=1
-				continue
-			input(each[6:].replace("\"", ""))
-			newreq=requests.get(each[6:].replace("\"", "").replace("}", ""))
-	
-	print(newreq.text)
+		#Check if there was an update.  
+		r=requests.get("https://api.github.com/repos/paulizleet/CEDNet-Python-Suite/git/refs/heads/master")
+		if r.status_code != requests.codes.ok:
+			print("Error fetching the update.  Are you online?  Skipping update this time.")
+			return
 
-	sp=newreq.text.split(",")
 	
-	for each in sp:
+	
+		print(r.text)
+		newreq = None
+		sp = r.text.split(",")
 		
-		if each[:6].strip() == "\"date\"":
-			if each.strip() == txt.strip():
-				print("No update required")
-				return
-			else:
-				f.write(each)
-				f.close()
-			break
-	
+		txt=""
+		f=None
+		try:
+			f = open("C:\\PaulScripts\\sys\\configs\\last_update.txt", 'r')
+			txt=f.read()
+		except:
+			f = open("C:\\PaulScripts\\sys\\configs\\last_update.txt", 'w')
+		
+		
+		counter=0
+		for each in sp:
+			
+			if each[:5].strip() == "\"url\"":
+				if counter == 0:
+					counter+=1
+					continue
+				input(each[6:].replace("\"", ""))
+				newreq=requests.get(each[6:].replace("\"", "").replace("}", ""))
+		
+		print(newreq.text)
+
+		sp=newreq.text.split(",")
+		
+		for each in sp:
+			
+			if each[:6].strip() == "\"date\"":
+				if each.strip() == txt.strip():
+					print("No update required")
+					return
+				else:
+					f.write(each)
+					f.close()
+				break
+	except:
+		print("Error fetching the update.  Are you online?  Skipping update this time.")
+		return
 	
 		
 	#There was a mismatch between the latest commit and the current code.

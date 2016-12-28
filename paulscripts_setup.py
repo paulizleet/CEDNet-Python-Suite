@@ -35,6 +35,8 @@ def _logpath(path, names):
     logging.info('Working in %s' % path)
     return []   # nothing will be ignored       
 
+
+
 if __name__ == "__main__":
     
     if os.getcwd()[0] != 'C':
@@ -66,6 +68,11 @@ if __name__ == "__main__":
     except:
         print("pip failed to install pywin32.  Halting.")
         quit()  
+	try:
+		pip.main(['install', 'requests'])
+	except:
+		print("pip failed to install pywin32. Halting.")
+		quit()
     
     #Making all of the needed directories
     make_dir("PaulScripts")
@@ -84,39 +91,54 @@ if __name__ == "__main__":
 	make_dir("PaulScripts\\sys\\configs")
 	make_dir("PaulScripts\\sys\\logs")
 	
-	f=open("C:\\PaulScripts\\configs\\customer_info.txt",'w')
+	if os.path.isfile("C:\\PaulScripts\\configs\\customer_info.txt") == False:
 	
-	f.write("2		Account Number\n")
-	f.write("3		Customer Name\n")
-	f.write("5		Address Line 1\n")
-	f.write("6		Address Line 2\n")
-	f.write("9		Customer city\n")
-	f.write("8		Customer zip\n")
-	f.write("7		Customer state\n")
-	f.close()
-	
-	f=open("C:\\PaulScripts\\configs\\solar_product_info.txt",'w')
-	
-	f.write("-5		Order Date\n")
-	f.write("2		Cat Number\n")
-	f.write("-3		Order Quantity\n")
-	f.write("4		Invoice Number\n")
-    f.write("
-	f.close()
-	
+		f=open("C:\\PaulScripts\\configs\\customer_info.txt",'w')
+		
+		f.write("2		Account Number\n")
+		f.write("3		Customer Name\n")
+		f.write("5		Address Line 1\n")
+		f.write("6		Address Line 2\n")
+		f.write("9		Customer city\n")
+		f.write("8		Customer zip\n")
+		f.write("7		Customer state\n")
+		f.close()
+	else:
+		print("customer_info.txt already exists.  Will not overwrite.")
+	if os.path.isfile("C:\\PaulScripts\\configs\\solar_product_info.txt") == False:	
+		f=open("C:\\PaulScripts\\configs\\solar_product_info.txt",'w')
+		
+		f.write("-5		Order Date\n")
+		f.write("2		Cat Number\n")
+		f.write("-3		Order Quantity\n")
+		f.write("4		Invoice Number\n")
+		f.write("
+		f.close()
+	else:
+		print("solar_product_info.txt already exists.  Will not overwrite.")
     wb = Workbook()
     
     
-    #Creating three empty workbooks before initializing them
-    wb.save(path + "PaulScripts\\Inventory Checking\\cycle.xlsx")
-    wb.save(path + "PaulScripts\\Inventory Checking\\cycle_out.xlsx")
-    wb.save(path + "PaulScripts\\This Week's Stock Status.xlsx")
+    #Creating required worksheets and initialize them if they don't already exist.
+	
+	if os.path.isfile(path + "PaulScripts\\Inventory Checking\\cycle.xlsx") == False:
+		wb.save(path + "PaulScripts\\Inventory Checking\\cycle.xlsx")
+		cycle.run(skip_prompt=True)
+		print("cycle ran for the first time")
+	else:
+		print("cycle.xlsx already exists.  Will not overwrite.")	
+		
 
-    #Initializing spreadsheets which need it
-    nobins.run(skip_prompt=True)
-    print("Nobins ran for the first time.")
-    cycle.run(skip_prompt=True)
-    print("cycle ran for the first time")
+	if os.path.isfile(path + "PaulScripts\\This Week's Stock Status.xlsx") == False:
+		wb.save(path + "PaulScripts\\This Week's Stock Status.xlsx")
+		nobins.run(skip_prompt=True)
+		print("Nobins ran for the first time.")
+	else:
+		print("This Week's Stock Status.xlsx already exists.  Will not overwrite.")
+		
+		
+
+
     
     f = open("C:\\PaulScripts\\.init.txt", 'w')
     f.write("Scripts setup OK")

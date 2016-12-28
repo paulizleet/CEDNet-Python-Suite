@@ -19,7 +19,7 @@ def writeMatrix(fn, productList, margin, margins):
 	"""whut"""
 	#print(productList[0])
 	#print(writing)
-
+	
 	f = open(path + fn, 'w')
 	i = 0
 	j=0
@@ -73,21 +73,30 @@ def formatPrice(price, mfr, uom, margins):
 	if margin == 0:
 		return 0
 		
-		
-	#price = round((float(price) * get_multiplier(uom) ) / margin,2)
-		
-	#price=int(price*100)
 	
-	#price = str(price)
-	
-	price = zeroes[:-str(str(int(round((float(price) * get_multiplier(uom) ) / margin,2)*100))).__len__()]+str(str(int(round((float(price) * get_multiplier(uom) ) / margin,2)*100)))
+	price = zeroes[:-len(str(str(int(round((float(price) * get_multiplier(uom) ) / margin,2)*100))))]
+			+ str(str(int(round((float(price) * get_multiplier(uom) ) / margin,2)*100)))
 	
 	return price
 
 def readLPF(fn):
 	"""whut"""
 	
-	f = open(fn, 'r')
+	
+	while True:
+		try:
+		
+			f = open(fn, 'r')
+
+		except FileNotFoundError:
+			print("CEDNet data files not found.  \nPlease run the Data Files export function in CEDNet")
+			print("It can be found at Maintainance > Product > Data Files")
+			choice=input("\nPress enter when ready, or type quit to return to the last screen").strip()
+			
+			if choice.lower() == 'quit':
+				return
+		break	
+		
 	pl = []
 	i = 0
 	for line in f:
@@ -97,23 +106,8 @@ def readLPF(fn):
 	f.close()
 	return pl
 	
-def readMatrix(fn):
-	"""whut"""
-	
-	f = open(path + fn, 'r')
-	pl = []
-	i = 0
-	for line in f:
-		pl.append(parseLine(line))
-		i+=1
-
-	f.close()
-	return pl
-	
 def parseLPFLine(line):
-		"""whut
-		
-		"""
+
 		pl = []
 		
 		line=line.split("|")
@@ -129,7 +123,7 @@ def parseLPFLine(line):
 		pl.append("5")#Level
 		pl.append(line[1] + "     "[:-len(line[1])])#Mfr
 		pl.append(line[2] + "                      "[:-len(line[2]))#Name
-		pl.append(line[10])#Price  "000000000000000"[:-price.__len__()]+price
+		pl.append(line[10])#Price
 		pl.append(line[12])#UOM
 		pl.append("01012020")#Exp
 		pl.append("   ")#Pad 3
@@ -142,9 +136,7 @@ def parseLPFLine(line):
 		return pl
 
 def parseLine(line):
-	"""whut
-	
-	"""
+
 	pl = []
 	pl.append(line[:11])
 	pl.append(line[11:33])
@@ -154,13 +146,11 @@ def parseLine(line):
 	
 def compare(pl, cm):
 	
-	print(pl.__len__())
 	for cmeach in cm:
 		popUs = []
 		print(cmeach[1])
-		for i in range(0, pl.__len__()):
+		for i in range(0, len(pl)):
 			if cmeach[1] == pl[i][3]:
-				#print("will pop: " + str(i))
 				popUs.append(i)
 		
 		
@@ -168,9 +158,7 @@ def compare(pl, cm):
 			pl.pop(each)
 	
 		
-	print(pl.__len__())
-	
-	print(pl)
+
 	return pl
 
 def get_margin(mfr, margins):
@@ -224,6 +212,8 @@ def readMargins():
 		
 		f.close
 		return [['DEFAULT', .75]]
+		
+		
 	lns = []
 	
 	for line in f:
@@ -239,33 +229,16 @@ def readMargins():
 	
 def run():
 	#read all products in
-	
-	while True:
-		try:
-			productList = readLPF("C:\Invsys\Algorithm\SPKPRDDT.lsq")
-		except FileNotFoundError:
-			print("CEDNet data files not found.  \nPlease run the Data Files export function in CEDNet")
-			print("It can be found at Maintainance > Product > Data Files")
-			choice=input("\nPress enter when ready, or type quit to return to the last screen").strip()
-			
-			if choice.lower() == 'quit':
-				return
-		break
 
-			
+	productList = readLPF("C:\Invsys\Algorithm\SPKPRDDT.lsq")		
 			
 	margins = readMargins()
-	i=0
-
-	#print("got list")
-	#currentMatrix = readMatrix("base_export.lsq")
 	
-	#currentMatrix = compare(productList, currentMatrix)
-		
+	i=0	
 		
 	writeMatrix("Import Base.lsq", productList, REG_CUSTOMER, margins)
 	
-	print(str(productList.__len__()) + " Items in total.")
+	print(str(len(productList)) + " Items in total.")
 	
 if __name__ == "__main__":
 

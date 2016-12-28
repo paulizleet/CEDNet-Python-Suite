@@ -211,8 +211,14 @@ def save_as_excel(s):
 	cellborder = Border(left=side, right=side, bottom=side, top=side)
 
 	ws = CED.write_excel_sheet(header = header, list = s, sheet=ws, border=cellborder)
+	
+	while True:
+		try:
+			wb.save("C:\\PaulScripts\\cycle_out.xlsx")
+			break
+		except:
+            input("Please close the cycle_out excel document.  Press enter to continue")
 
-	wb.save("C:\\PaulScripts\\cycle_out.xlsx")
 
 def sort_wb(wb):
 
@@ -267,7 +273,6 @@ def run(skip_prompt = False):
 
 	#Prepares the workbook for processing.
 	ws = do_product_book(wb)
-	#wb.save("C:\\PaulScripts\\Inventory Checking\\cycle.xlsx")
 
 	if skip_prompt != True:
 		ch = input("Would you like to get today's cycle? Y/n...")
@@ -285,7 +290,13 @@ def run(skip_prompt = False):
 		spit = get_items_to_check(ws)
 		#Output the list
 		save_as_excel(spit)
-	wb.save("C:\\PaulScripts\\Inventory Checking\\cycle.xlsx")
+		
+	while:
+		try:
+			wb.save("C:\\PaulScripts\\Inventory Checking\\cycle.xlsx")
+			break
+		except:
+			input("Please close the cycle count excel document.  Press enter to continue...")
 
 if __name__ == "__main__":
 	run(True)

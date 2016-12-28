@@ -65,9 +65,22 @@ def get_customers():
 		
 		
 		customer_numbers = []
+		while True:
+			try:
+				f=open("C:\\PaulScripts\\configs\\customer_info.txt", 'r')
+				break
+			except FileNotFoundError:
+				f=open("C:\\PaulScripts\\configs\\customer_info.txt",'w')
 		
-		f=open("C:\\PaulScripts\\configs\\customer_info.txt", 'r')
-		
+				f.write("2		Account Number\n")
+				f.write("3		Customer Name\n")
+				f.write("5		Address Line 1\n")
+				f.write("6		Address Line 2\n")
+				f.write("9		Customer city\n")
+				f.write("8		Customer zip\n")
+				f.write("7		Customer state\n")
+				f.close()
+				
 		while len(customer_numbers) < 7:
 
 			line= f.readline()

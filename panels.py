@@ -42,8 +42,13 @@ def write_book(lns):
 		
 	ws.cell("F1").value = "Updated:"
 	ws.cell("G1").value = datetime.date.today()
-	wb.save("C:\\Users\\pgallagherjr\\Dropbox\\Panel Stock\panels.xlsx")
-	
+	while True:
+		try:
+			wb.save("C:\\Users\\pgallagherjr\\Dropbox\\Panel Stock\panels.xlsx")
+			break
+		except:
+			input("Please close the panel stock excel document.  Press enter to continue.")
+		
 	
 	
 main()

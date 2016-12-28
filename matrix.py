@@ -57,11 +57,7 @@ path = "C:\\PaulScripts\\Wire Matrix\\"
 
 
 
-def do_matrix(vendor, new=None):
-	if new == True:
-		f = open("C:\\PaulScripts\\Wire Matrix\\IMPORT_MATRIX.lsq", 'w')
-		f.close()
-
+def do_matrix(vendor):
 		
 	if vendor == WIRE_VENDOR:
 		matrix_in = "wiret_BACKUP.lsq"
@@ -85,7 +81,21 @@ def do_matrix(vendor, new=None):
 	
 			
 		productList = []
-		f = open(path + matrix_in, 'r')
+		
+		while True:
+			try:
+				f = open(path + matrix_in, 'r')
+				break
+			except FileNotFoundError:
+				print("Please export the matrix you would like to update to C:\\PaulScripts\\Wire Matrix\\{m}".format(m=matrix_in)
+				ch=input("Or type q to quit.")
+				if ch.lower() == "q":
+					return -1
+					
+				
+				
+		
+		
 		productList = readMatrix(f)
 		
 		f.close()
@@ -105,22 +115,18 @@ def do_matrix(vendor, new=None):
 		break
 			
 def readMatrix(f):
-	"""whut
 
-	"""
 	pl = []
-	i = 0
+
 	for line in f:
 		pl.append(parseLine(line))
-		i+=1
+
 
 	return pl
 
 def writeMatrix(f, productList):
-	"""whut"""
-	#print(productList[0])
+
 	for line in productList:
-		#print(line)
 		wline = ""
 		wline+=line[0]
 		wline+=line[1]
@@ -130,15 +136,13 @@ def writeMatrix(f, productList):
 		f.write(wline)
 
 def parseLine(line):
-		"""whut
 
-		"""
 		pl = []
 		pl.append(line[:11])
 		pl.append(line[11:33])
 		pl.append(float(line[33:48]) /100)
 		pl.append(line[48:97])
-		#print(pl)
+
 		return pl
 
 def formatPrice(price):
@@ -148,7 +152,7 @@ def formatPrice(price):
 
 	price=int((float(price)*100))
 	price = str(price)
-	price = zeroes[:-price.__len__()]+price
+	price = zeroes[:-len(price)]+price
 	return price
 
 def updatePrices(pl, SHEET = None, VENDOR = None, MARGIN = None):
@@ -161,8 +165,6 @@ def updatePrices(pl, SHEET = None, VENDOR = None, MARGIN = None):
 		hotbook = Workbook()
 		hs = hotbook.create_sheet("Wire Pricing")
 		hs.append(["Type", "Price per 100ft"])
-		#mcbook = load_workbook('C:\\PaulScripts\\Wire Matrix\\southwireMC.xlsx', data_only = True)
-		#mcsheet = mcbook.get_sheet_by_name("AS30 - MC ALUM 14-10 AWG")
 
 	if VENDOR == PIPE_VENDOR:
 		vendorBook = loadConduitWorkbook()
@@ -172,22 +174,13 @@ def updatePrices(pl, SHEET = None, VENDOR = None, MARGIN = None):
 		hotbook = Workbook()
 		hs = hotbook.create_sheet("Pipe Pricing")
 
-	#print(loadPipeReferenceBook().get_sheet_names())
 
 	j = 1
 	for i, each in enumerate(pl):
 
 		if getCellValueString(refsheet, r=j, c=3) != "DNU":
-			#if(getCellValueString(refsheet, r=j, c=3) == "MC"):
-			#	prc = getPrice(each[1], refsheet, mcbook, j)
-			#	print("mc")
-			#else:
+
 			prc = getPrice(each[1], refsheet, vendorBook, j)
-
-		#	print(each[1] + str(prc))
-
-		#	pause()
-
 
 			if prc == -1:
 				each[2] = 0.0
@@ -213,10 +206,6 @@ def updatePrices(pl, SHEET = None, VENDOR = None, MARGIN = None):
 					
 					continue
 
-			#	print(each[2])
-			#	if MARGIN == TOP_CUSTOMER:
-			#		do_hotsheet(hs, i, 2, each[2])
-			#	else:
 				hs.append([each[1], prc])
 		else:
 			if MARGIN == TOP_CUSTOMER:
@@ -233,9 +222,9 @@ def updatePrices(pl, SHEET = None, VENDOR = None, MARGIN = None):
 def getPrice(product, rb, vb, i):
 
 	for i in range(1, rb.max_row + 1):
-		#print(product.strip() + " -- " + getCellValueString(rb,r=i,c=1).strip())
+
 		if product.strip() == getCellValueString(rb,r=i,c=1).strip():
-			#print("OK")
+
 			c = getCoordinates(i, rb)
 
 
@@ -243,20 +232,18 @@ def getPrice(product, rb, vb, i):
 				return -1.0
 			print(c)
 			print(getCellValueString(rb, "A{0}".format(i) )+ " " + str(c) + " " + str(getVendorCost(c, vb)) + "\n")
-		#	print(type(getVendorCost(c, vb)))
-		#	print(getVendorCost(c, vb))
+
 			return getVendorCost(c, vb)
 
 
 	return -1.0
 
 def getCoordinates(i, rb):
-	#print("coordinates: " + getCellValueString(rb, "C{0}".format(i)), getCellValueString(rb, "D{0}".format(i)) + getCellValueString(rb, 'E{0}'.format(i)))
+
 	return (getCellValueString(rb, "C{0}".format(i)), getCellValueString(rb, "D{0}".format(i)) + getCellValueString(rb, 'E{0}'.format(i)))
 
 def getVendorCost(c, vb):
-	#print(type(vb.get_sheet_by_name(c[0]).cell(c[1]).value).__name__)
-	#print(vb.get_sheet_names())
+
 
 
 	if c[0] == "CU":
@@ -290,7 +277,6 @@ def loadWireReferenceBook():
 	return load_workbook('C:\\PaulScripts\\Wire Matrix\\referenceBook.xlsx', data_only = True)
 
 def loadSouthwireBook():
-	#return load_workbook('C:\\PaulScripts\\Wire Matrix\\southwire.xlsx', data_only = True)
 	wirebook = load_workbook('C:\\PaulScripts\\Wire Matrix\\wirebooks\\sw.xlsx', data_only = True)
 	mc = load_workbook('C:\\PaulScripts\\Wire Matrix\\wirebooks\\mc.xlsx', data_only = True)
 	sheets = [None]*6
@@ -320,9 +306,7 @@ def getCellValueString(worksheet,coor = None,  r=None, c=None):
 		if (r is None or c is None):
 			msg = "You have to provide a value either for " \
 					"'coordinate' or for 'row' *and* 'column'"
-		#print(str(r) + " " + str(c))
 		return str(worksheet.cell(row=r,column=c).value)
-	#print(coor)
 	return str(worksheet.cell(coor).value)
 
 def getSheetName(sc):
@@ -336,7 +320,7 @@ def getSheetName(sc):
 def array_atize(c):
 	i=0
 	sc = []
-	while i < c.__len__():
+	while i < len(c):
 		sc.append(c[i:i+1])
 		i+=1
 
@@ -347,21 +331,19 @@ def cleanMatrix(pl):
 	i = 0
 	for each in pl:
 		i+=1
-		for j in range(i, pl.__len__()-1):
-			#print(each[1] + pl[j][1])
+		for j in range(i, len(pl)-1):
+
 
 			if each[1] == pl[j][1]:
 				pl= pl[:j-1] + pl[j:]
 
-	#print(pl.__len__())
 	return pl
 
 def changeDestinationMatrix(dest, pl):
 	spaces = "     "
-	dest = dest+spaces[dest.__len__():]
+	dest = dest+spaces[len(dest):]
 	i = 0
-	#print(dest + pl[i][0][5:])
-	#quit()
+
 	for each in pl:
 		pl[i][0] = dest + pl[i][0][5:]
 		i+=1
@@ -371,12 +353,7 @@ def pause():
 	input("...")
 
 def run():
-	"""
- 
-     whut
 
-	"""
-	#f = open()
 	#reset matrix
 	
 	f=open(path +"IMPORT_MATRIX.lsq", 'w')
@@ -397,11 +374,16 @@ def run():
 
 	getcontext().prec = 3
 	print("Doing wire...")
-	do_matrix(WIRE_VENDOR, new=True)
+	a = do_matrix(WIRE_VENDOR)
+	if a == -1:
+		return
+		
 	while True:
 		choice = input("Would you like to do pipe as well?")
 		if choice.lower() == "y":
-			do_matrix(PIPE_VENDOR)
+			a=do_matrix(PIPE_VENDOR)
+				if a == -1:
+					return
 			break
 		elif choice.lower() == 'n':
 			break
@@ -412,6 +394,7 @@ def run():
 
 	if __name__ !="__main__":
 		input("\nSaved Matrix to 'C:\PaulScripts\Wire Matrix\IMPORT_MATRIX.lsq'\nPress enter to continue...")
+		
 if __name__ == "__main__":
 	run()
 else:
