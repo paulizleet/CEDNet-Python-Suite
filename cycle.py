@@ -291,7 +291,7 @@ def run(skip_prompt = False):
         #Output the list
         save_as_excel(spit)
         
-    while:
+    while True:
         try:
             wb.save("C:\\PaulScripts\\Inventory Checking\\cycle.xlsx")
             break

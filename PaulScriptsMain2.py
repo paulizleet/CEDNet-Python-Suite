@@ -118,7 +118,7 @@ def update_scripts():
 	
 	
 
-	#Check if there was an update.  
+	'''#Check if there was an update.  
 	try: 
 		r=requests.get("https://api.github.com/repos/paulizleet/CEDNet-Python-Suite/git/refs/heads/master")
 		if r.status_code != requests.codes.ok:
@@ -171,7 +171,7 @@ def update_scripts():
 		print("Error fetching the update.  Are you online?  Skipping update this time.")
 		return
 	
-	
+	'''
 	#There was a mismatch between the latest commit and the current code.
 	#Download the latest code and update.
 	r = requests.get("https://github.com/paulizleet/CEDNet-Python-Suite/archive/master.zip")
@@ -185,6 +185,7 @@ def update_scripts():
 	for roots, dirs, files in os.walk(os.getcwd()+"\\update\\CEDNet-Python-Suite-master"):
 		print(roots)
 		print(dirs)
+		print(os.getcwd())
 		for each in files:
 			shutil.copy(roots+"\\"+each, os.getcwd()+"\\Pythons\\CEDNet-Python-Suite\\")
 		break
