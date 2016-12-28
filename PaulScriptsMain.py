@@ -117,6 +117,9 @@ def chose_bins():
 			
 def update_scripts():
 	
+	
+	
+	#Check if there was an update.  
 	r=requests.get("https://api.github.com/repos/paulizleet/CEDNet-Python-Suite/git/refs/heads/master")
 	
 	print(r.text)
@@ -124,7 +127,7 @@ def update_scripts():
 	sp = r.text.split(",")
 	
 	txt=""
-	
+	f=None
 	try:
 		f = open("C:\\PaulScripts\\sys\\configs\\last_update.txt", 'r')
 		txt=f.read()
@@ -156,9 +159,11 @@ def update_scripts():
 				f.write(each)
 				f.close()
 			break
-			
+	
+	
 		
-
+	#There was a mismatch between the latest commit and the current code.
+	#Download the latest code and update.
 	r = requests.get("https://github.com/paulizleet/CEDNet-Python-Suite/archive/master.zip")
 	f=open(os.getcwd()+"\\update.zip", "wb")
 	f.write(r.content)

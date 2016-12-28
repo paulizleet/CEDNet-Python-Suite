@@ -127,16 +127,16 @@ def parseLPFLine(line):
 	
 		pl.append(target) #Target matrix
 		pl.append("5")#Level
-		pl.append(line[1] + "     "[:-line[1].__len__()])#Mfr
-		pl.append(line[2] + "                      "[:-line[2].__len__()])#Name
+		pl.append(line[1] + "     "[:-len(line[1])])#Mfr
+		pl.append(line[2] + "                      "[:-len(line[2]))#Name
 		pl.append(line[10])#Price  "000000000000000"[:-price.__len__()]+price
 		pl.append(line[12])#UOM
 		pl.append("01012020")#Exp
 		pl.append("   ")#Pad 3
-		pl.append("00000000000"[:-line[3].__len__()]+line[3])	#UPC
+		pl.append("00000000000"[:-len(line[3])]+line[3])	#UPC
 		pl.append("      ") #pad 6
 		pl.append("000000000000000")#Zeroes
-		pl.append(line[1] + "     "[:-line[1].__len__()]) #matrix
+		pl.append(line[1] + "     "[:-len(line[1])]) #matrix
 
 
 		return pl
