@@ -181,7 +181,7 @@ def update_scripts():
 	
 	z=ZipFile(os.getcwd()+"\\update.zip", "r")
 	z.extractall(".\\update")
-
+	z.close()
 	for roots, dirs, files in os.walk(os.getcwd()+"\\update\\CEDNet-Python-Suite-master"):
 		print(roots)
 		print(dirs)
