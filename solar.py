@@ -298,7 +298,7 @@ def do_sma(customers, product_numbers):
 	ws.cell("D5").value = date.isoformat(date.today())
 
 	smawb.save(path + "Solar Reporting\Monthly\SMA\SMA {i}.xlsx".format(i=strftime("%B %Y")))
-def do_lg(customers):
+def do_lg(customers, product_numbers):
 	if wbname is None:
 		print(("LG POS workbook not found.  Consider editing\n"
 				"C:\\PaulScripts\\Solar Reporting\\Workbook_names.txt"))
@@ -390,7 +390,7 @@ def do_lg(customers):
 
 	lgwb.save(path + "Solar Reporting\Monthly\LG\LG {i}.xlsx".format(i=strftime("%B %Y")))
 	
-def do_solaredge(customers):
+def do_solaredge(customers, product_numbers):
 	if wbname is None:
 		print(("SolarEdge POS workbook not found.  Consider editing\n"
 				"C:\\PaulScripts\\Solar Reporting\\Workbook_names.txt"))
@@ -661,9 +661,7 @@ def get_workbook_names():
 			f.write("#Vendor: File Name\n")
 			f.write("Ironridge:\n")
 			f.write("Enphase:\n")
-			f.write("LG:\n")
-			f.write("SMA:\n")
-			f.write("SolarEdge:\n")
+
 			f.close()
 				
 			try:
@@ -672,7 +670,7 @@ def get_workbook_names():
 			except CalledProcessError:
 				print("Error opening notepad.")
 	
-	fns = [None] * 5
+	fns = [None, None]
 	for line in f:
 		if line[0]=='#':
 			continue
@@ -681,12 +679,7 @@ def get_workbook_names():
 			fns[0] = sp[1].strip()
 		if sp[0] == "Enphase":
 			fns[1] = sp[1].strip()
-		if sp[0] == "LG":
-			fns[2] = sp[1].strip()
-		if sp[0] == "SMA":
-			fns[3] = sp[1].strip()
-		if sp[0] == "SolarEdge":
-			fns[4] = sp[1].strip()
+
 	
 	return fns
 			
@@ -724,10 +717,10 @@ def run():
 	while True:
 		opt = input("Monthly? Y/N").upper()
 		if opt == "Y":
-			ch = do_sma(customers,product_numbers,wbnames[3])
+			ch = do_sma(customers,product_numbers)
 			if ch == -1:
 				return
-			ch =do_lg(customers,product_numbers,wbnames[2])
+			ch =do_lg(customers,product_numbers)
 			break
 		elif opt == "N":
 			break
@@ -735,7 +728,7 @@ def run():
 	while True:
 		opt = input("Quarterly? Y/N").upper()
 		if opt == "Y":
-			ch = do_solaredge(customers,product_numbers,wbnames[4])
+			ch = do_solaredge(customers,product_numbers)
 			if ch == -1:
 				return
 			break

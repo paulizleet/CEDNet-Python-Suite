@@ -116,13 +116,19 @@ def do_matrix(vendor):
 			
 def readMatrix(f):
 
-	pl = []
+	mtx = []
 
 	for line in f:
-		pl.append(parseLine(line))
+		pl = []
+		pl.append(line[:11])
+		pl.append(line[11:33])
+		pl.append(float(line[33:48]) /100)
+		pl.append(line[48:97])
+		
+		mtx.append(pl)
 
 
-	return pl
+	return mtx
 
 def writeMatrix(f, productList):
 
@@ -135,15 +141,6 @@ def writeMatrix(f, productList):
 		wline+="\n"
 		f.write(wline)
 
-def parseLine(line):
-
-		pl = []
-		pl.append(line[:11])
-		pl.append(line[11:33])
-		pl.append(float(line[33:48]) /100)
-		pl.append(line[48:97])
-
-		return pl
 
 def formatPrice(price):
 	zeroes = "000000000000000"

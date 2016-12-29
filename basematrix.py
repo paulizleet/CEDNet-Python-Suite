@@ -134,15 +134,6 @@ def parseLPFLine(line):
 
         return pl
 
-def parseLine(line):
-
-    pl = []
-    pl.append(line[:11])
-    pl.append(line[11:33])
-    pl.append(float(line[33:48]) /100)
-    pl.append(line[48:97])
-    return pl
-    
 def compare(pl, cm):
     
     for cmeach in cm:

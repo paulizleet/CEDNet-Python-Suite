@@ -13,12 +13,12 @@ from shutil import copytree
 import logging
 
 
-    
+
 from openpyxl import Workbook
 
 import cycle
 import nobins
-
+import CEDNetUtils as CED
 
 path = "C:\\"
 
@@ -93,16 +93,8 @@ if __name__ == "__main__":
     
     if os.path.isfile("C:\\PaulScripts\\configs\\customer_info.txt") == False:
     
-        f=open("C:\\PaulScripts\\configs\\customer_info.txt",'w')
-        
-        f.write("2      Account Number\n")
-        f.write("3      Customer Name\n")
-        f.write("5      Address Line 1\n")
-        f.write("6      Address Line 2\n")
-        f.write("9      Customer city\n")
-        f.write("8      Customer zip\n")
-        f.write("7      Customer state\n")
-        f.close()
+        CED.get_customers(write_only=True)
+		
     else:
         print("customer_info.txt already exists.  Will not overwrite.")
     if os.path.isfile("C:\\PaulScripts\\configs\\solar_product_info.txt") == False: 

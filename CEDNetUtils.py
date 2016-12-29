@@ -57,8 +57,11 @@ def get_products():
         prd.append(p)
         
     return prd
+	
+	
+
     
-def get_customers():
+def get_customers(write_only = None):
     while True:
         cs=get_ced_file("SPKCUSDT.lsq")
         
@@ -80,7 +83,10 @@ def get_customers():
                 f.write("8      Customer zip\n")
                 f.write("7      Customer state\n")
                 f.close()
-                
+				
+		if write_only == True:
+			return
+				
         while len(customer_numbers) < 7:
 
             line= f.readline()
@@ -171,6 +177,15 @@ def get_customers():
             return customers
         else:
             print("invalid choice")
+			
+def parseMatrixLine(line):
+
+    pl = []
+    pl.append(line[:11])
+    pl.append(line[11:33])
+    pl.append(float(line[33:48]) /100)
+    pl.append(line[48:97])
+    return pl
             
             
 def get_ced_file(filename):
