@@ -26,7 +26,7 @@ def make_dir(dir):
     print(path + dir)
     try:
         os.mkdir(path + dir)
-        print("Created directory {d}".format(d=path+dir)
+        print("Created directory {d}".format(d=path+dir))
     except FileExistsError:
         print("Directory {d} already exists.".format(d=dir))
 
@@ -48,8 +48,11 @@ if __name__ == "__main__":
             if inp.upper() == 'Y':
             
                 print("This is going to take a while.  Just don't close this program before it's finished.")
-                copytree(os.getcwd()[:3], "C:\\Python", ignore=_logpath)
-                print("\nFinished Copying files.")
+                try:
+                
+                    copytree(os.getcwd()[:3], "C:\\Python", ignore=_logpath)
+                except:
+                    print("\nFinished Copying files.")
                 break
             elif inp.upper()=='N':
                 print("Be prepared to wait a while.\n\n")
@@ -88,13 +91,13 @@ if __name__ == "__main__":
     make_dir("PaulScripts\\Speaks Exports")
     make_dir("PaulScripts\\Wire Matrix")
     make_dir("PaulScripts\\Wire Matrix\\wirebooks")
-    make_dir("PaulScripts\\sys\\configs")
-    make_dir("PaulScripts\\sys\\logs")
+    make_dir("PaulScripts\\configs")
+    make_dir("PaulScripts\\logs")
     
     if os.path.isfile("C:\\PaulScripts\\configs\\customer_info.txt") == False:
     
         CED.get_customers(write_only=True)
-		
+        
     else:
         print("customer_info.txt already exists.  Will not overwrite.")
     if os.path.isfile("C:\\PaulScripts\\configs\\solar_product_info.txt") == False: 
@@ -104,7 +107,7 @@ if __name__ == "__main__":
         f.write("2      Cat Number\n")
         f.write("-3     Order Quantity\n")
         f.write("4      Invoice Number\n")
-        f.write("
+
         f.close()
     else:
         print("solar_product_info.txt already exists.  Will not overwrite.")
