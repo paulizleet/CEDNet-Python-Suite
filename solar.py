@@ -141,15 +141,22 @@ CUST_CITY = 5
 CUST_STATE = 4
 
 
-def do_ironridge(customers, product_numbers):
-
+def do_ironridge(customers, product_numbers, wbname):
+	
+	if wbname is None:
+		print(("Ironridge POS workbook not found.  Consider editing\n"
+				"C:\\PaulScripts\\Solar Reporting\\Workbook_names.txt"))
+		return
 	pos = run_speaks(customers, path + "Speaks Exports\spksweek.txt", "IRIDG", iridg)
+	if pos == -1:
+		return -1
+		
 	print(pos[0])
 	
 	
+	
 
-
-	iridgwb = load_workbook(path + "Solar Reporting\Weekly\Ironridge POS q4 sales.xlsx")
+	iridgwb = load_workbook(path + "Solar Reporting\Weekly\\"+wbname)
 
 	ws = None
 
@@ -193,13 +200,20 @@ def do_ironridge(customers, product_numbers):
 
 
 	#iridgwb.save(path + "Speaks Exports\Ironridge POS {i}.xlsx".format(i=strftime("%B %d %Y")))
-	iridgwb.save(path + "Solar Reporting\Weekly\Ironridge POS q4 sales.xlsx")
+	iridgwb.save(path + "Solar Reporting\Weekly\\" + wbname)
 	
-def do_enphase(customers, product_numbers):
-
+def do_enphase(customers, product_numbers,wbname):
+	if wbname is None:
+		print(("Enphase POS workbook not found.  Consider editing\n"
+				"C:\\PaulScripts\\Solar Reporting\\Workbook_names.txt"))
+		return
+	
 	pos = run_speaks(customers, path + "Speaks Exports\spksweek.txt", "ENP", enp)
-
-	enpwb = load_workbook(path + "Solar Reporting\Weekly\Enphase POS q4.xlsx")
+	
+	if pos == -1:
+		return -1
+		
+	enpwb = load_workbook(path + "Solar Reporting\Weekly\\"+wbname)
 	ws = enpwb.get_sheet_by_name("POS_Data")
 	mr = ws.max_row+ 1
 
@@ -241,12 +255,17 @@ def do_enphase(customers, product_numbers):
 
 		#print(ws.row(mr+i))
 
-	enpwb.save(path + "Solar Reporting\Weekly\Enphase POS q4.xlsx")
+	enpwb.save(path + "Solar Reporting\Weekly\\"+wbname)
 
 def do_sma(customers, product_numbers):
-
+	if wbname is None:
+		print(("SMA workbook not found.  Consider editing\n"
+				"C:\\PaulScripts\\Solar Reporting\\Workbook_names.txt"))
+		return
 	pos = run_speaks(customers, path+"Speaks Exports\spksmonth.txt", "SMA", sma)
-
+	if pos == -1:
+		return -1
+		
 	smawb = load_workbook(path + "Solar Reporting\Monthly\SMA\SMA Template.xlsx")
 	ws = smawb.get_sheet_by_name("POS")
 	mr = 9
@@ -280,11 +299,16 @@ def do_sma(customers, product_numbers):
 
 	smawb.save(path + "Solar Reporting\Monthly\SMA\SMA {i}.xlsx".format(i=strftime("%B %Y")))
 def do_lg(customers):
-	
+	if wbname is None:
+		print(("LG POS workbook not found.  Consider editing\n"
+				"C:\\PaulScripts\\Solar Reporting\\Workbook_names.txt"))
+		return
 	
 	print(customers[57])
 	pos = run_speaks(customers, path+"Speaks Exports\spksmonth.txt", "LG", lg)
-	
+	if pos == -1:
+		return -1
+		
 	lgwb = load_workbook(path + "Solar Reporting\Monthly\LG\LG Template.xlsx")
 	ws = lgwb.get_sheet_by_name("POS Reporting")
 	mr = 2
@@ -365,10 +389,70 @@ def do_lg(customers):
 
 
 	lgwb.save(path + "Solar Reporting\Monthly\LG\LG {i}.xlsx".format(i=strftime("%B %Y")))
+	
+def do_solaredge(customers):
+	if wbname is None:
+		print(("SolarEdge POS workbook not found.  Consider editing\n"
+				"C:\\PaulScripts\\Solar Reporting\\Workbook_names.txt"))
+		return
+	pos = run_speaks(customers, path + "Speaks Exports\solaredge.txt", "SE", se)
+	if pos == -1:
+		return -1
+		
+	print(pos[0])
 
+	sewb = load_workbook(path + "Solar Reporting\Quarterly\SolarEdge POS.xlsx")
+
+
+
+
+	ws = sewb.get_sheet_by_name("Sheet1")
+	mr = ws.max_row+ 1
+	fewerspaces = 0
+
+	for i, each in enumerate(pos):
+		cust = []
+		for each2 in customers:
+			if each2[CUST_ACCT] == each[CUST_ACCT]:
+				cust = each2
+				break
+
+
+
+		print(cust)
+		print(each)
+
+
+		if each[-1] == "0":
+			fewerspaces -= 1
+			continue
+
+		#Customer
+		ws.cell(row=mr + i + fewerspaces, column= 1).value = cust[CUST_NAME] #Customer Name
+		ws.cell(row=mr + i+ fewerspaces, column=2).value = cust[CUST_ADDR] #address
+		ws.cell(row=mr + i+ fewerspaces, column=3).value = each[product_numbers[0]] #date
+		ws.cell(row=mr + i+ fewerspaces, column=4).value = each[product_numbers[1]]#cat num
+		ws.cell(row=mr + i+ fewerspaces, column=5).value = each[product_numbers[2]]#Qty
+
+
+
+
+	#iridgwb.save(path + "Speaks Exports\Ironridge POS {i}.xlsx".format(i=strftime("%B %d %Y")))
+	sewb.save(path + "Solar Reporting\Quarterly\SolarEdge POS.xlsx")
+	
 def run_speaks(customers, fp, mfr, prod):
-
-	f = open(fp)
+	
+	while True:
+		try:
+			f = open(fp)
+			break
+		except FileNotFoundError:
+			print( ("Speaks file not found.  Please run a speaks query for the previous week/month.\n"
+					"Save it either at C:\PaulScripts\Solar Reporting\spksweek.txt, or spksmonth.txt"))
+			ch = input("Press enter to continue, or q to return to the previous screen.")
+			if ch.lower() == 'q':
+				return -1
+	print("Gathering speaks data...")		
 	lines = []
 
 	for line in f:
@@ -383,7 +467,6 @@ def run_speaks(customers, fp, mfr, prod):
 				break
 		if l[0].strip() == mfr:
 			lines.append(l)
-
 
 
 	splits = []
@@ -473,74 +556,30 @@ def ced_stock(fp, mfr, prod):
 
 	return final
 
-def do_solaredge(customers):
-
-	pos = run_speaks(customers, path + "Speaks Exports\solaredge.txt", "SE", se)
-	print(pos[0])
-
-	sewb = load_workbook(path + "Solar Reporting\Quarterly\SolarEdge POS.xlsx")
-
-
-
-
-	ws = sewb.get_sheet_by_name("Sheet1")
-	mr = ws.max_row+ 1
-	fewerspaces = 0
-
-	for i, each in enumerate(pos):
-		cust = []
-		for each2 in customers:
-			if each2[CUST_ACCT] == each[CUST_ACCT]:
-				cust = each2
-				break
-
-
-
-		print(cust)
-		print(each)
-
-
-		if each[-1] == "0":
-			fewerspaces -= 1
-			continue
-
-		#Customer
-		ws.cell(row=mr + i + fewerspaces, column= 1).value = cust[CUST_NAME] #Customer Name
-		ws.cell(row=mr + i+ fewerspaces, column=2).value = cust[CUST_ADDR] #address
-		ws.cell(row=mr + i+ fewerspaces, column=3).value = each[product_numbers[0]] #date
-		ws.cell(row=mr + i+ fewerspaces, column=4).value = each[product_numbers[1]]#cat num
-		ws.cell(row=mr + i+ fewerspaces, column=5).value = each[product_numbers[2]]#Qty
-
-
-
-
-	#iridgwb.save(path + "Speaks Exports\Ironridge POS {i}.xlsx".format(i=strftime("%B %d %Y")))
-	sewb.save(path + "Solar Reporting\Quarterly\SolarEdge POS.xlsx")
-	
 def get_proper_speaks_numbers(customers):
 	while True:
-
-	
 		product_numbers = []
 		f=open("C:\\PaulScripts\\configs\\solar_product_info.txt", 'r')
 		
 		while len(product_numbers) < 4:
-			
+
 			
 			line = f.readline()
-
+			print(line)
 			try:
 				product_numbers.append(int(line[:2].strip()))
 			except ValueError:
 				print("nop")
 				continue
-				
+		
+
 		pos = run_speaks(customers, path + "Speaks Exports\spksweek.txt", "IRIDG", iridg)
 		
 		
 		biggest = []
 		
 		for each in pos:
+
 			if len(each) > len(biggest):
 				biggest = each
 		
@@ -609,6 +648,49 @@ def get_proper_speaks_numbers(customers):
 		else:
 			print("invalid choice")
 			
+def get_workbook_names():
+	while True:
+		try:
+			f = open(path+"Solar Reporting\\workbook_names.txt", 'r')
+			break
+		except FileNotFoundError:
+			print("Workbook reference file not found.  I will create one for you to edit...")
+			print("Save and close notepad to continue")
+			f=open(path+"Solar Reporting\\workbook_names.txt", 'w')
+			
+			f.write("#Vendor: File Name\n")
+			f.write("Ironridge:\n")
+			f.write("Enphase:\n")
+			f.write("LG:\n")
+			f.write("SMA:\n")
+			f.write("SolarEdge:\n")
+			f.close()
+				
+			try:
+				check_output(["notepad.exe", "C:\\PaulScripts\\Solar Reporting\\workbook_names.txt"]).decode("ascii")
+				
+			except CalledProcessError:
+				print("Error opening notepad.")
+	
+	fns = [None] * 5
+	for line in f:
+		if line[0]=='#':
+			continue
+		sp = line.strip().split(":")
+		if sp[0] == "Ironridge":
+			fns[0] = sp[1].strip()
+		if sp[0] == "Enphase":
+			fns[1] = sp[1].strip()
+		if sp[0] == "LG":
+			fns[2] = sp[1].strip()
+		if sp[0] == "SMA":
+			fns[3] = sp[1].strip()
+		if sp[0] == "SolarEdge":
+			fns[4] = sp[1].strip()
+	
+	return fns
+			
+			
 			
 
 
@@ -622,14 +704,17 @@ def run():
 	#print(customers[1])
 	product_numbers = get_proper_speaks_numbers(customers)
 	
-	
+	wbnames = get_workbook_names()
 
-
+	ch = None
 	while True:
 		opt = input("Weekly? Y/N").upper()
 		if opt == "Y":
-			do_ironridge(customers,product_numbers)
-			do_enphase(customers,product_numbers)
+			ch = do_ironridge(customers,product_numbers, wbnames[0])
+			if ch == -1:
+				return
+			ch = do_enphase(customers,product_numbers,wbnames[1])
+			
 			break
 		elif opt == "N":
 			break
@@ -639,8 +724,10 @@ def run():
 	while True:
 		opt = input("Monthly? Y/N").upper()
 		if opt == "Y":
-			do_sma(customers,product_numbers)
-			do_lg(customers,product_numbers)
+			ch = do_sma(customers,product_numbers,wbnames[3])
+			if ch == -1:
+				return
+			ch =do_lg(customers,product_numbers,wbnames[2])
 			break
 		elif opt == "N":
 			break
@@ -648,7 +735,9 @@ def run():
 	while True:
 		opt = input("Quarterly? Y/N").upper()
 		if opt == "Y":
-			do_solaredge(customers,product_numbers)
+			ch = do_solaredge(customers,product_numbers,wbnames[4])
+			if ch == -1:
+				return
 			break
 		elif opt == "N":
 			break
