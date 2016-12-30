@@ -75,12 +75,14 @@ def do_ironridge(customers, product_numbers, wbname, iridg):
     
     if wbname is None:
         print(("Ironridge POS workbook not found.  Consider editing\n"
-                "C:\\PaulScripts\\Solar Reporting\\Workbook_names.txt"))
+                "C:\\PaulScripts\\Solar Reporting\\Workbook_names.txt."
+                "Returning to previous home menu."  ))
         return
     pos = run_speaks(customers, path + "Speaks Exports\spksweek.txt", "IRIDG", iridg)
+    
     if pos == -1:
         return -1
-        
+    print(pos)    
     print(pos[0])
     
     
@@ -505,7 +507,8 @@ def get_proper_speaks_numbers(customers, iridg):
         
 
         pos = run_speaks(customers, path + "Speaks Exports\spksweek.txt", "IRIDG", iridg)
-        
+        if pos == -1:
+            return -1
         
         biggest = []
         
@@ -672,16 +675,18 @@ def run():
     #print(customers[1])
     product_numbers = get_proper_speaks_numbers(customers, iridg)
     
+    if product_numbers == -1:
+        return -1
+    
     wbnames = get_workbook_names()
 
     ch = None
     while True:
         opt = input("Weekly? Y/N").upper()
         if opt == "Y":
-            ch = do_ironridge(customers,product_numbers, wbnames[0], iridg)
-            if ch == -1:
-                return
-            ch = do_enphase(customers,product_numbers,wbnames[1], enp)
+            do_ironridge(customers,product_numbers, wbnames[0], iridg)
+            
+            do_enphase(customers,product_numbers,wbnames[1], enp)
             
             break
         elif opt == "N":
@@ -692,10 +697,10 @@ def run():
     while True:
         opt = input("Monthly? Y/N").upper()
         if opt == "Y":
-            ch = do_sma(customers,product_numbers, sma)
+            do_sma(customers,product_numbers, sma)
             if ch == -1:
                 return
-            ch =do_lg(customers,product_numbers, lg)
+            do_lg(customers,product_numbers, lg)
             break
         elif opt == "N":
             break
@@ -703,7 +708,7 @@ def run():
     while True:
         opt = input("Quarterly? Y/N").upper()
         if opt == "Y":
-            ch = do_solaredge(customers,product_numbers, se)
+            do_solaredge(customers,product_numbers, se)
             if ch == -1:
                 return
             break
