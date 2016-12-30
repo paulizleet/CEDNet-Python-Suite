@@ -2,18 +2,20 @@
 #Usually I copy/paste code from one script to the next.
 #I'll put all common code in here instead.
 
+
+from subprocess import check_output
+from subprocess import CalledProcessError
+from os import system
+from datetime import datetime
+import math
+import random
+
 from openpyxl import Workbook
 from openpyxl import load_workbook
 from openpyxl.worksheet import dimensions
 from openpyxl.styles import Side, Border
-from subprocess import check_output
-from subprocess import CalledProcessError
 
-from os import system
 
-from datetime import datetime
-import math
-import random
 
 def split_product_lines():
 
