@@ -82,16 +82,22 @@ if __name__ == "__main__":
     make_dir("PaulScripts\\Inventory Checking")
     make_dir("PaulScripts\\Pricing Matrices")
     make_dir("PaulScripts\\Shelving Addresses")
+	
     make_dir("PaulScripts\\Solar Reporting")
+    make_dir("PaulScripts\\Solar Reporting\\Products")
     make_dir("PaulScripts\\Solar Reporting\\Weekly")
     make_dir("PaulScripts\\Solar Reporting\\Quarterly")
     make_dir("PaulScripts\\Solar Reporting\\Monthly")
     make_dir("PaulScripts\\Solar Reporting\\Monthly\\SMA")
     make_dir("PaulScripts\\Solar Reporting\\Monthly\\LG")
+	
     make_dir("PaulScripts\\Speaks Exports")
+	
     make_dir("PaulScripts\\Wire Matrix")
     make_dir("PaulScripts\\Wire Matrix\\wirebooks")
+	
     make_dir("PaulScripts\\configs")
+	
     make_dir("PaulScripts\\logs")
     
     if os.path.isfile("C:\\PaulScripts\\configs\\customer_info.txt") == False:
@@ -111,8 +117,8 @@ if __name__ == "__main__":
         f.close()
     else:
         print("solar_product_info.txt already exists.  Will not overwrite.")
+	
     wb = Workbook()
-    
     
     #Creating required worksheets and initialize them if they don't already exist.
     
@@ -130,6 +136,8 @@ if __name__ == "__main__":
         print("Nobins ran for the first time.")
     else:
         print("This Week's Stock Status.xlsx already exists.  Will not overwrite.")
+		
+	
         
         
 
