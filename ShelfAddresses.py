@@ -396,7 +396,7 @@ def run():
     type_bin_locations()
 
     done()
-
+    os.system("cls")
 if __name__ == "__main__":
     run()
 else:
