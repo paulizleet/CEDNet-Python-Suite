@@ -49,13 +49,6 @@
 
 
 '''
-
-
-
-from openpyxl import Workbook
-from openpyxl import load_workbook
-from datetime import datetime
-
 import os
 
 import time
@@ -67,6 +60,14 @@ import math
 
 import win32
 import win32com.client
+import ctypes
+
+
+from openpyxl import Workbook
+from openpyxl import load_workbook
+from datetime import datetime
+
+
 
 path = "C:\\PaulScripts\\"
 
@@ -88,6 +89,15 @@ def type_bin_locations():
 
     #backup_stock_workbook()
     wb = load_workbook("C:\\PaulScripts\\This Week's Stock Status.xlsx", data_only=True)
+    
+    #make sure the workbook is closed before beginning.
+    while True:
+        try:
+            wb.save("C:\\PaulScripts\\This Week's Stock Status.xlsx")
+            break
+        except:
+            input("Please close the stock status excel document.  Press enter to continue")
+    
     ws = wb.get_sheet_by_name("Sheet")
 
     print("got workbook")
@@ -95,7 +105,7 @@ def type_bin_locations():
 
     #index of which line in the spreadsheet the program has already ran until.
     DONE_ALREADY = get_done_already(ws)
-
+    
     #click where the taskbar should be  to bring focus to CEDNet
     click(233, 14)
 
@@ -155,8 +165,8 @@ def type_bin_locations():
     saveStockStatus(0, wb, ws, 0)
 
 def saveStockStatus(i, wb, ws, items):
-
-
+    
+    
 
     click(40, 70)    #click save button in CEDNet
 
@@ -178,7 +188,8 @@ def saveStockStatus(i, wb, ws, items):
                                         #Wait a little bit longer just in case.
 
 
-    click(962, 630)                #Click the OK button on the dialog button that appears.
+    click(int(ctypes.windll.user32.GetSystemMetrics(0)/2),
+          int(ctypes.windll.user32.GetSystemMetrics(1)/2) + 100)                #Click the OK button on the dialog button that appears.
     items = 1
 
 def write_item(ws, i, item, loc):
@@ -252,12 +263,17 @@ def backup_stock_workbook():
 
 def get_done_already(ws):
     #returns the last manufacturer that was ran through so it can pick up where it left off in case of interruption
-
+    
     da = ws.cell("m1").value
+    
 
-    if da is None:
+    
+    if da is None or da == 0: 
         da = 2
-    print("Starting with Mfr: "+ str(da))
+    print("Starting with Mfr: "+ ws.cell(row=da, column=1).value)
+    
+    
+
     return da
 
 def get_mfr_start(ws, i):
@@ -270,6 +286,10 @@ def get_mfr_start(ws, i):
 
         ms = j+1
         break
+        
+
+    if ms == 0:
+        ms = 1
 
     return ms
 
