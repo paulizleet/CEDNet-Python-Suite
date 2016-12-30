@@ -32,7 +32,7 @@ def PaulScriptsMenu():
         print("Welcome to Paul's CEDNet Utility Scripts main menu")
 
         while True:
-            os.system('cls')
+
             print("\n")
             print("1. Inventory Level Checking")
             print("2. Solar Reporting")
